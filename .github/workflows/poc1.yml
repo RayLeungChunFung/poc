@@ -1,0 +1,73 @@
+name: poc8003636/poc1
+on:
+  push:
+  workflow_dispatch:
+
+concurrency:
+  group: "${{ github.ref }}"
+  cancel-in-progress: true
+
+env:
+  AWS_ACCESS_KEY_ID: AKIAU3CPNR4AHNXTMASR
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 20
+        lfs: true
+    - name: Format code
+      run: |
+        # Add any commands to format your code here, if necessary.
+
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 20
+        lfs: true
+    - name: Validate code
+      run: |
+        # Add any commands to validate your code here.
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 20
+        lfs: true
+    - name: Build and package artifacts
+      run: |
+        terraform init
+        terraform plan
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4.1.0
+      with:
+        name: build
+        path: output.tf
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: "$TF_STATE_NAME"
+    timeout-minutes: 60
+    needs: build
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 20
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+      with:
+        name: build
+    - name: Deploy
+      run: |
+        terraform apply
