@@ -40,7 +40,7 @@ jobs:
     - uses: actions/upload-artifact@v2 
       with: 
           name: build-artifact 
-          path: /home/runner/work/poc1/poc1 
+          path: /dist 
   deploy: 
     needs: build 
     runs-on: ubuntu-latest 
