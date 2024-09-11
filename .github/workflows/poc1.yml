@@ -25,6 +25,22 @@ jobs:
       with: 
         fetch-depth: 20 
         lfs: true 
+  plan:
+    needs: validate
+    runs-on: ubuntu-latest
+    container:
+      image: hashicorp/terraform:1.2.5
+      options: "--entrypoint /usr/bin/env"
+    if: startsWith(github.ref, 'refs/heads')
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 20
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+      with:
+        name: validate
   build: 
     runs-on: ubuntu-latest 
     timeout-minutes: 60 
