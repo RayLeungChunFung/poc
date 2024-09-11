@@ -1,5 +1,4 @@
 name: poc8003636/poc1
-
 on:
   push:
     branches: ['main', 'develop']  # Specify which branches trigger the workflow
