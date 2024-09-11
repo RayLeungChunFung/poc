@@ -8,23 +8,37 @@ concurrency:
 env: 
   AWS_ACCESS_KEY_ID: AKIAU3CPNR4AHNXTMASR 
   AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}" 
-jobs: 
-  fmt: 
-    runs-on: ubuntu-latest 
-    timeout-minutes: 60 
-    steps: 
-    - uses: actions/checkout@v4.1.0 
-      with: 
-        fetch-depth: 20 
-        lfs: true 
-  validate: 
-    runs-on: ubuntu-latest 
-    timeout-minutes: 60 
-    steps: 
-    - uses: actions/checkout@v4.1.0 
-      with: 
-        fetch-depth: 20 
-        lfs: true 
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 20
+        lfs: true
+    - name: Install Git LFS
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git-lfs
+    - name: Git LFS Pull
+      run: git lfs pull
+
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 20
+        lfs: true
+    - name: Install Git LFS
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git-lfs
+    - name: Git LFS Pull
+      run: git lfs pull
+
   plan:
     needs: validate
     runs-on: ubuntu-latest
@@ -38,135 +52,55 @@ jobs:
       with:
         fetch-depth: 20
         lfs: true
+    - name: Install Git LFS
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git-lfs
+    - name: Git LFS Pull
+      run: git lfs pull
     - uses: actions/download-artifact@v4.1.0
       with:
         name: validate
-  build: 
-    runs-on: ubuntu-latest 
-    timeout-minutes: 60 
-    steps: 
-    - uses: actions/checkout@v4.1.0 
-      with: 
-        fetch-depth: 20 
-        lfs: true 
-    # - name: Set permissions 
-    #   run: sudo chown -R $(whoami) .git 
-    - name: Some build steps here 
-      run: echo "Build step here" 
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 20
+        lfs: true
+    - name: Install Git LFS
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git-lfs
+    - name: Git LFS Pull
+      run: git lfs pull
+    - name: Some build steps here
+      run: echo "Build step here"
     - run: echo "Compiling the code..."
     - run: echo "Compile complete."
-    - uses: actions/upload-artifact@v4 
-      with: 
-          name: build-artifact 
+    - uses: actions/upload-artifact@v4
+      with:
+          name: build-artifact
           path: dist/poc1
-  deploy: 
-    needs: build 
-    runs-on: ubuntu-latest 
-    environment: 
-      name: "$TF_STATE_NAME" 
-    timeout-minutes: 60 
-    steps: 
-      - uses: actions/checkout@v4.1.0 
-        with: 
-          fetch-depth: 20 
-          lfs: true 
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: "$TF_STATE_NAME"
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4.1.0
+        with:
+          fetch-depth: 20
+          lfs: true
+      - name: Install Git LFS
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git-lfs
+      - name: Git LFS Pull
+        run: git lfs pull
       - run: echo "Deploying application..."
       - run: echo "Application successfully deployed."
-      - name: Set permissions 
-        run: sudo chown -R $(whoami) .git 
-      - uses: actions/download-artifact@v4 
-        # with: 
-         # name: build-artifact 
-
-# name: poc8003636/poc1
-# on: 
-#   push: 
-#   workflow_dispatch: 
-# concurrency: 
-#   group: "${{ github.ref }}" 
-#   cancel-in-progress: true 
-# env: 
-#   AWS_ACCESS_KEY_ID: AKIAU3CPNR4AHNXTMASR 
-#   AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}" 
-# jobs: 
-#   build: 
-#     runs-on: ubuntu-latest 
-#     timeout-minutes: 60 
-#     steps: 
-#     - uses: actions/checkout@v4.1.0 
-#       with: 
-#         fetch-depth: 20 
-#         lfs: true 
-#     - name: Set permissions 
-#       run: sudo chown -R $(whoami) .git 
-#     - name: Some build steps here 
-#       run: echo "Build step here" 
-#     - uses: actions/upload-artifact@v2 
-#       with: 
-#       name: build-artifact 
-#       path: /home/runner/work/poc1/poc1 
-#   deploy: 
-#     needs: 
-#     build runs-on: ubuntu-latest 
-#     environment: 
-#       name: "$TF_STATE_NAME" 
-#     timeout-minutes: 60 
-#     steps: 
-#       - uses: actions/checkout@v4.1.0 
-#         with: 
-#           fetch-depth: 20 
-#           lfs: true 
-#       - name: Set permissions 
-#         run: sudo chown -R $(whoami) .git 
-#       - uses: actions/download-artifact@v2 
-#         with: 
-#         name: build-artifact
-
-# name: poc8003636/poc1
-# on:
-#   push:
-#   workflow_dispatch:
-# concurrency:
-#   group: "${{ github.ref }}"
-#   cancel-in-progress: true
-# env:
-#   AWS_ACCESS_KEY_ID: AKIAU3CPNR4AHNXTMASR
-#   AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-# jobs:
-#   fmt:
-#     runs-on: ubuntu-latest
-#     timeout-minutes: 60
-#     steps:
-#     - uses: actions/checkout@v4.1.0
-#       with:
-#         fetch-depth: 20
-#         lfs: true
-#   validate:
-#     runs-on: ubuntu-latest
-#     timeout-minutes: 60
-#     steps:
-#     - uses: actions/checkout@v4.1.0
-#       with:
-#         fetch-depth: 20
-#         lfs: true
-#   build:
-#     runs-on: ubuntu-latest
-#     timeout-minutes: 60
-#     steps:
-#     - uses: actions/checkout@v4.1.0
-#       with:
-#         fetch-depth: 20
-#         lfs: true
-#   deploy:
-#     runs-on: ubuntu-latest
-#     environment:
-#       name: "$TF_STATE_NAME"
-#     timeout-minutes: 60
-#     steps:
-#     - uses: actions/checkout@v4.1.0
-#       with:
-#         fetch-depth: 20
-#         lfs: true
-#     - uses: actions/download-artifact@v4.1.0
-#       with:
-#         name: build
