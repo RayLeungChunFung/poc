@@ -39,7 +39,7 @@ jobs:
       run: echo "Build step here" 
     - run: echo "Compiling the code..."
     - run: echo "Compile complete."
-    - uses: actions/upload-artifact@v2 
+    - uses: actions/upload-artifact@v4 
       with: 
           name: build-artifact 
           path: dist/poc1
@@ -58,7 +58,7 @@ jobs:
       - run: echo "Application successfully deployed."
       - name: Set permissions 
         run: sudo chown -R $(whoami) .git 
-      - uses: actions/download-artifact@v2 
+      - uses: actions/download-artifact@v4 
         # with: 
          # name: build-artifact 
 
