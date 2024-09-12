@@ -15,7 +15,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: us-west-2
-  TF_LOG: debug  # Enable debug logging
+  TF_LOG: debug
 
 jobs:
   validate:
@@ -36,16 +36,13 @@ jobs:
     - name: Remove Existing Terraform Directory
       run: rm -rf .terraform
 
-    - name: Terraform Version
-      run: terraform --version
-
     - name: Terraform Init
-      run: terraform init
-      shell: bash  # Use bash instead of sh
-      working-directory: csop-aws-team-dev  # Specify the directory where Terraform files reside
+      run: terraform init -no-color -input=false
+      working-directory: csop-aws-team-dev
 
     - name: Terraform Validate
       run: terraform validate
+      working-directory: csop-aws-team-dev
 
   plan:
     needs: validate
