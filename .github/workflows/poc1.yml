@@ -1,7 +1,12 @@
-name: poc8003636/poc1
+name: Terraform CI/CD Pipeline
+
 on:
   push:
-  workflow_dispatch:
+    branches: ['main', 'test1']
+  pull_request:
+    branches: ['main', 'test1']
+  workflow_dispatch:  # Allows manual triggering
+
 concurrency:
   group: "${{ github.ref }}"
   cancel-in-progress: true
@@ -9,7 +14,8 @@ concurrency:
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: us-west-2  # Replace with your desired region
+  AWS_DEFAULT_REGION: us-west-2
+  TF_LOG: debug  # Enable debug logging
 
 jobs:
   validate:
