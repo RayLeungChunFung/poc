@@ -10,6 +10,7 @@ terraform {
     bucket = "u620"
     key     = "u620/terraform.tfstate"
     region  = "us-west-2"
+  }
 }
 
 provider "aws" {
